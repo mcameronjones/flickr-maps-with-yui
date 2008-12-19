@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Postcard Map</title>
+<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/3.0.0pr1/build/cssfonts/fonts-min.css" />
+<script type="text/javascript" src="http://yui.yahooapis.com/3.0.0pr1/build/yui/yui-debug.js"></script>
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAuSKCoXMW8E_8pGDNypVCghQ__gNr9zqNNmN72YaPxRzcp8g2TBQtMfbydt76lCB-i-CfbwmF79SgaA" type="text/javascript"></script>
+</head>
+
+<body>
+
+<div id="container">
+    <div id="map" style="width: 900px; height: 500px"></div>
+    <div id="results">
+        <!--JSON output will be written to the DOM here-->
+    </div>
+</div>
+
+<script type="text/javascript">
+
+YUI({combine: true, timeout: 10000, filter:"debug", logInclude: {get:true, event:true, example:true}}).use("node", "dump",
+
+function(Y) { 
+
+    // We are going to create a global variable to get the 
+    // data back from the web service
+    MyNamespace = YUI.namespace('rrao');
+
+    var elResults = Y.get("#results");
+    var photos = new Array();
+    var map;
+    var onSiteExplorerSuccess = function(o) {
+
+    };
+
+    var load = function() {        
+      if (GBrowserIsCompatible()) {
+        map = new GMap2(document.getElementById("map"));
+        map.addControl(new GLargeMapControl());
+        map.addControl(new GOverviewMapControl());
+        map.enableDoubleClickZoom();
+        map.setCenter(new GLatLng(20, -2), 2);
+
+	}
+        var sURL = "http://api.flickr.com/services/rest/?method=flickr.photosets.getPhotos&api_key=b971e36bcf24816a498bc172855d5abc&photoset_id=72157607401290658&format=json&jsoncallback=loadPhotoSet"
+
+        var transactionObj = Y.Get.script(sURL, {
+            onSuccess: onSiteExplorerSuccess,
+            timeout: 20000,
+            context: Y
+        });
+        
+    };
+    
+    mapPhoto = function(photo) {
+	var icon = new GIcon();
+        icon.image = getPhotoURL(photo) + "_s.jpg";
+        icon.iconSize = new GSize(25, 25);
+        icon.iconAnchor = new GPoint(0, 0);
+        icon.infoWindowAnchor = new GPoint(25, 0);
+
+	var title = photo.title;
+
+	var point = new GLatLng(photo.latitude, photo.longitude);	
+	var marker = new GMarker( point, {title:title, icon:icon, draggable:false} );
+
+	var html = "<h2>" + photo.title + "</h2>";
+	html += "<div style='height:250px;width:250px;'><center><img style='margin:auto auto;' src='" + getPhotoURL(photo) + "_m.jpg' /></center></div>";
+
+        GEvent.addListener(marker, "click", function() {
+            marker.openInfoWindowHtml(html);
+        });
+
+        map.addOverlay(marker);
+
+    };
+
+    loadPhotoGeo = function(results) {
+        var pgeo = results.photo;
+	if (pgeo) {
+		var photo = photos[pgeo.id];
+
+		photo.latitude = pgeo.location.latitude;
+		photo.longitude = pgeo.location.longitude;
+
+		mapPhoto(photo);
+	}
+    }
+
+    loadPhotoSet = function(results) {
+
+        //work with the returned data to extract meaningful fields:
+        var photoset = results.photoset;
+
+	var baseurl = "http://api.flickr.com/services/rest/?method=flickr.photos.geo.getLocation&api_key=b971e36bcf24816a498bc172855d5abc&format=json&jsoncallback=loadPhotoGeo&photo_id=";
+	var geoURLs = new Array();
+
+        if(photoset) {
+	    //process list of inbound links:
+	    for (var i=0; i < photoset.photo.length; i++) {
+		var id = photoset.photo[i].id;
+		photos[id] = photoset.photo[i];
+		geoURLs.push(baseurl + id);
+	    }
+	}
+
+	var transactionObj = Y.Get.script(geoURLs, {
+	    onSuccess: loadGeoSuccess,
+	    onError: loadGeoError,
+            timeout: 20000,
+            context: Y
+	});
+		
+        //insert string into DOM:
+    };
+    loadGeoSuccess = function() {
+    };
+    loadGeoError = function() {
+    };
+    getPhotoURL = function(photo) {
+    //    http://farm{farm-id}.static.flickr.com/{server-id}/{id}_{secret}_[mstb].jpg
+        var url = "http://farm";
+	url += photo.farm + ".static.flickr.com/" + photo.server + "/" + photo.id + "_" + photo.secret;
+//	url += "_s.jpg";
+	return url;
+    };
+
+    Y.on("event:ready", load);
+
+});
+
+</script>
+</body>
+</html>
