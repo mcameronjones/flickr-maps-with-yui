@@ -1,16 +1,25 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
-<head>
-	<title>Postcard Map</title>
-	<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/3.0.0pr2/build/cssfonts/fonts-min.css" />
-</head>
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
 
-<body>
-<div id="container">
-    <div id="map" style="width: 900px; height: 500px"></div>
-    <script type="text/javascript" src="http://yui.yahooapis.com/3.0.0pr2/build/yui/yui-debug.js"></script>
-    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAuSKCoXMW8E_8pGDNypVCghQ__gNr9zqNNmN72YaPxRzcp8g2TBQtMfbydt76lCB-i-CfbwmF79SgaA" type="text/javascript"></script>
-    <script type="text/javascript" src="postcardmap.js"></script>
-</div>
-</body>
+		<!-- I am not sure this is necessary, it was copied from the YUI example -->
+		<link type="text/css" rel="stylesheet" href="http://yui.yahooapis.com/3.0.0pr2/build/cssfonts/fonts-min.css" />
+
+		<title>Postcard Map</title>
+	</head>
+
+	<body>
+		<!-- map element must have id="map" -->
+		<div id="map" style="width: 900px; height: 500px"></div>
+
+		<!-- use YUI libraries -->
+		<script type="text/javascript" src="http://yui.yahooapis.com/3.0.0pr2/build/yui/yui-debug.js"></script>
+
+		<!-- use Google Maps, you should change this line to use your Google Maps API key -->
+		<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAuSKCoXMW8E_8pGDNypVCghQ__gNr9zqNNmN72YaPxRzcp8g2TBQtMfbydt76lCB-i-CfbwmF79SgaA" type="text/javascript"></script>
+		<!-- get everything started, requires the map element have id='map', 
+		     otherwise it won't work -->
+		<script type="text/javascript" src="postcardmap.js"></script>
+	</body>
 </html>
