@@ -1,1 +1,9 @@
-grr...
+Shows a Flickr photoset on a Map. Photos need to be geotagged in Flickr for this to work.
+
+You need a Flickr API key and a Google Maps API key.
+
+Edit the Google Maps include URL (with your API key) in index.html
+
+Edit the Flickr API key in postcardmap.js
+
+Make sure your map element has id="map" in your DOM, then you're pretty much done.
